@@ -24,4 +24,4 @@ void Encrypt(mat_ZZ& ciphertext, mat_ZZ& message);
 //decryption function (takes in ciphertext and outputs message)
 void Decrypt(mat_ZZ& message, mat_ZZ& ciphertext);
 
-#endif _bgn_h
+#endif

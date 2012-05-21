@@ -1,7 +1,13 @@
 #include "bgn.h"
+#include <gsl/gsl_rng.h>
+#include <gsl/gsl_randist.h>
+#include <cmath>
 
 // prime represents the prime we are going to mod by for ciphertext
 ZZ prime;
+
+//prime is 2^k
+long k;
 
 //number of total records in the database (how big the database is)
 ZZ num_Records; 
@@ -15,7 +21,61 @@ mat_ZZ a,t;
 void GenerateKeys()
 {
 	//generate a and t
-	
+  // Primitive matrix G
+  mat_ZZ G, A_bar, H, R, A, temp;
+  long w = n*k;
+  G.SetDims(n,w);
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < k; j++) {
+      G[i][j] = (int) pow(2.0f, j);
+    }
+  }
+
+  long m_bar = 2*n;
+  A_bar.SetDims(n,m_bar);
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < n; j++) {
+      if (i == j) {
+        A_bar[i][j] = 1;
+      } else {
+        A_bar[i][j] = 0;
+      }
+    }
+  }
+  for (int i = 0; i < n; i++) {
+    for (int j = n+1; j < m_bar; j++) {
+      A_bar[i][j] = RandomBnd(prime);
+    }
+  }
+  
+  H = ident_mat_ZZ(n);
+
+  const gsl_rng_type * T;
+  gsl_rng * r;
+  gsl_rng_env_setup();
+  T = gsl_rng_default;
+  r = gsl_rng_alloc (T);
+  R.SetDims(m_bar,w);
+  for (int i = 0; i < m_bar; i++) {
+    for (int j = 0; j < w; j++) {
+      R[i][j] = (int) gsl_ran_gaussian(r, 0);
+      R[i][j] %= prime;
+    }
+  }
+
+  m = m_bar + w;
+  A.SetDims(n,m);
+	temp = H*G - A_bar*R;
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < m_bar; j++) {
+      A[i][j] = A_bar[i][j];
+    }
+  }
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < w; j++) {
+      A[i][m_bar + j] = temp[i][j];
+    }
+  }
 	//also set parameters based on restrictions in the paper (should just do set values more or less?)
 }
 
