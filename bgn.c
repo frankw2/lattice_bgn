@@ -58,7 +58,7 @@ void GenerateKeys()
   R.SetDims(m_bar,w);
   for (int i = 0; i < m_bar; i++) {
     for (int j = 0; j < w; j++) {
-      R[i][j] = (int) gsl_ran_gaussian(r, 0);
+      R[i][j] = (int) gsl_ran_gaussian(r, n);
       R[i][j] %= prime;
     }
   }
