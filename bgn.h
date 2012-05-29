@@ -6,6 +6,7 @@
 #include <NTL/vec_ZZ.h>
 #include <NTL/ZZ_pX.h>
 #include <NTL/mat_ZZ.h>
+#include <NTL/mat_ZZ_p.h>
 
 using namespace std;
 using namespace NTL;
@@ -14,6 +15,9 @@ using namespace NTL;
 extern ZZ prime, numRecords;
 extern long n,m;
 extern mat_ZZ a,t;
+
+//generates public and private keys and also public parameters
+void Init();
 
 //generates public and private keys and also public parameters
 void GenerateKeys();
