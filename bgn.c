@@ -11,7 +11,7 @@ ZZ prime, q;
 //q is 2^k
 int k;
 
-//number of total records in the database (how big the database is)
+//number of total records in the database (how big the database is, i.e. 2^16)
 ZZ num_Records; 
 
 //the n,m parameter in the paper
@@ -244,6 +244,21 @@ void Encrypt(mat_ZZ& ciphertext, mat_ZZ& message)
 	ciphertext = term1 + message;
 	
 	//need to zero out least significant bits (don't include num_Records significant bits)
+	for (int i = 0; i < ciphertext.NumRows(); i++){
+		for (int j = 0; j < ciphertext.NumCols(); j++){
+			//store last 16 bits (those are the important ones)
+			ZZ temp;
+			temp = ciphertext[i][j] & 0xFFFF;
+			//zero out 32 bits (really 16 bits because we are ORing the least significant 16 back in)
+			ciphertext[i][j] = (ciphertext[i][j] >> 32) << 32;
+			
+			//put least significant 16 bits back in 
+			ciphertext[i][j] = ciphertext[i][j] | temp;
+			
+			//mod by prime (q in the lwe-bgn paper)
+			ciphertext[i][j] = ciphertext[i][j] % prime;
+		}
+	}
 	
 }
 

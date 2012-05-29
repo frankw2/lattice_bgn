@@ -1,6 +1,6 @@
 CC = g++
 CFLAGS = -g -Wall -O2
-LDFLAGS = -lntl -lgmp -lm
+LDFLAGS = -lntl -lgmp -lm -lgsl
 
 SOURCES = test.c bgn.c
 TARGET = test
